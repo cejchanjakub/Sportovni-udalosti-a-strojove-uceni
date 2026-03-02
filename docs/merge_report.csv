@@ -1,0 +1,11 @@
+file,season,rows,cols_total,cols_present_core,cols_missing_core,missing_core_cols
+EPL_2016-17.csv,2016-17,380,65,22,7,Time;AvgH;AvgD;AvgA;MaxH;MaxD;MaxA
+EPL_2017-18.csv,2017-18,380,65,22,7,Time;AvgH;AvgD;AvgA;MaxH;MaxD;MaxA
+EPL_2018-19.csv,2018-19,380,62,22,7,Time;AvgH;AvgD;AvgA;MaxH;MaxD;MaxA
+EPL_2019-20.csv,2019-20,380,106,29,0,
+EPL_2020-21.csv,2020-21,380,106,29,0,
+EPL_2021-22.csv,2021-22,380,106,29,0,
+EPL_2022-23.csv,2022-23,380,106,29,0,
+EPL_2023-24.csv,2023-24,380,106,29,0,
+EPL_2024-25.csv,2024-25,380,120,29,0,
+EPL_2025-26.csv,2025-26,229,132,29,0,

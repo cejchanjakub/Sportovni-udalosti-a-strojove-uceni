@@ -1,0 +1,38 @@
+{
+  "target": "AST",
+  "prefix": "sot__ast",
+  "family": "poisson",
+  "alpha": null,
+  "clip": 15.0,
+  "standardize": true,
+  "n_features": 3,
+  "features": [
+    "elo_home",
+    "elo_away",
+    "elo_diff"
+  ],
+  "metrics": {
+    "train": {
+      "mae": 1.7182010243265535,
+      "rmse": 2.1869672100553013
+    },
+    "val": {
+      "mae": 1.841580081755226,
+      "rmse": 2.4536057483807037
+    },
+    "test": {
+      "mae": 1.7086913706280784,
+      "rmse": 2.2358746894374235
+    }
+  },
+  "saved_at": "2026-02-27T22:52:07",
+  "tag": null,
+  "data_files": {
+    "train": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\train_features.csv",
+    "val": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\val_features.csv",
+    "test": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\test_features.csv"
+  },
+  "data_hash_train": "766dacbc3469399143d7720e31e319f3e0404f7d029933d8609acba073e5032c",
+  "data_hash_val": "70fb64cfe717d85d681a46b76ed9b6b0867cf106790bd09ebca9c0f407c1db62",
+  "data_hash_test": "daf6911984a6b4183fff203bcd7def697f50a9193f31da3a16a3bab7934c9bb8"
+}

@@ -1,0 +1,4 @@
+timestamp: 2026-01-27T10:50:07
+file: C:\Users\Cejch\OneDrive\Plocha\Diplomka\dp_sazeni_ml\data\processed\EPL_all_seasons_base.csv
+bytes: 675080
+sha256: 35f4f17064b0f301b969f85a69c385748caeed1ed18610a06880806239c80b3d

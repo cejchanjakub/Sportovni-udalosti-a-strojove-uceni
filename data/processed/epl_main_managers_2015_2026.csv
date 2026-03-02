@@ -1,0 +1,150 @@
+coach_name,team,start_date,end_date
+Arsène Wenger,Arsenal,2015-07-01,2018-05-13
+Unai Emery,Arsenal,2018-05-23,2019-11-29
+Mikel Arteta,Arsenal,2019-12-22,
+Tim Sherwood,Aston Villa,2015-07-01,2015-10-25
+Rémi Garde,Aston Villa,2015-11-02,2016-03-29
+Dean Smith,Aston Villa,2018-10-10,2021-11-07
+Steven Gerrard,Aston Villa,2021-11-11,2022-10-20
+Unai Emery,Aston Villa,2022-11-01,
+Eddie Howe,Bournemouth,2015-07-01,2020-08-01
+Scott Parker,Bournemouth,2021-06-28,2022-08-30
+Gary O'Neil,Bournemouth,2022-08-30,2023-06-19
+Andoni Iraola,Bournemouth,2023-06-19,
+Thomas Frank,Brentford,2018-10-16,2025-06-12
+Keith Andrews,Brentford,2025-06-27,
+Chris Hughton,Brighton & Hove Albion,2015-07-01,2019-05-13
+Graham Potter,Brighton & Hove Albion,2019-05-20,2022-09-08
+Roberto De Zerbi,Brighton & Hove Albion,2022-09-18,2024-05-19
+Fabian Hürzeler,Brighton & Hove Albion,2024-07-02,
+Sean Dyche,Burnley,2015-07-01,2022-04-15
+Vincent Kompany,Burnley,2022-06-14,2024-05-29
+Scott Parker,Burnley,2024-07-05,
+Neil Warnock,Cardiff City,2016-10-05,2019-11-11
+José Mourinho,Chelsea,2015-07-01,2015-12-17
+Antonio Conte,Chelsea,2016-07-03,2018-07-13
+Maurizio Sarri,Chelsea,2018-07-14,2019-06-16
+Frank Lampard,Chelsea,2019-07-04,2021-01-25
+Thomas Tuchel,Chelsea,2021-01-26,2022-09-07
+Graham Potter,Chelsea,2022-09-08,2023-04-02
+Mauricio Pochettino,Chelsea,2023-07-01,2024-05-21
+Enzo Maresca,Chelsea,2024-07-01,2026-01-01
+Liam Rosenior,Chelsea,2026-01-08,
+Alan Pardew,Crystal Palace,2015-07-01,2016-12-22
+Sam Allardyce,Crystal Palace,2016-12-23,2017-05-23
+Frank de Boer,Crystal Palace,2017-06-26,2017-09-11
+Roy Hodgson,Crystal Palace,2017-09-12,2021-05-24
+Patrick Vieira,Crystal Palace,2021-07-04,2023-03-17
+Roy Hodgson,Crystal Palace,2023-03-21,2024-02-19
+Oliver Glasner,Crystal Palace,2024-02-19,
+Roberto Martínez,Everton,2015-07-01,2016-05-12
+Ronald Koeman,Everton,2016-06-14,2017-10-23
+Sam Allardyce,Everton,2017-11-30,2018-05-16
+Marco Silva,Everton,2018-05-31,2019-12-05
+Carlo Ancelotti,Everton,2019-12-22,2021-06-01
+Rafael Benítez,Everton,2021-06-30,2022-01-16
+Frank Lampard,Everton,2022-01-31,2023-01-23
+Sean Dyche,Everton,2023-01-30,2025-01-09
+David Moyes,Everton,2025-01-11,
+Slaviša Jokanović,Fulham,2015-12-27,2018-11-14
+Claudio Ranieri,Fulham,2018-11-14,2019-02-28
+Scott Parker,Fulham,2019-02-28,2021-06-28
+Marco Silva,Fulham,2021-07-01,
+David Wagner,Huddersfield Town,2015-11-09,2019-01-14
+Jan Siewert,Huddersfield Town,2019-01-21,2019-08-16
+Steve Bruce,Hull City,2015-07-01,2016-07-22
+Mike Phelan,Hull City,2016-07-22,2017-01-03
+Marco Silva,Hull City,2017-01-05,2017-05-25
+Kieran McKenna §,Ipswich Town,2021-12-16,
+Marcelo Bielsa,Leeds United,2018-06-15,2022-02-27
+Jesse Marsch,Leeds United,2022-02-28,2023-02-06
+Javi Gracia,Leeds United,2023-02-21,2023-05-03
+Sam Allardyce,Leeds United,2023-05-03,2023-06-02
+Daniel Farke,Leeds United,2023-07-04,
+Claudio Ranieri,Leicester City,2015-07-13,2017-02-23
+Craig Shakespeare,Leicester City,2017-02-23,2017-10-17
+Claude Puel,Leicester City,2017-10-25,2019-02-24
+Brendan Rodgers,Leicester City,2019-02-27,2023-04-02
+Dean Smith,Leicester City,2023-04-10,2023-06-16
+Steve Cooper,Leicester City,2024-06-20,2024-11-24
+Ruud van Nistelrooy,Leicester City,2024-12-01,2025-06-27
+Brendan Rodgers,Liverpool,2015-07-01,2015-10-04
+Jürgen Klopp,Liverpool,2015-10-08,2024-05-19
+Arne Slot,Liverpool,2024-06-01,
+Rob Edwards,Luton Town,2022-11-17,2025-01-09
+Manuel Pellegrini,Manchester City,2015-07-01,2016-06-30
+Pep Guardiola,Manchester City,2016-07-01,
+Louis van Gaal,Manchester United,2015-07-01,2016-05-23
+José Mourinho,Manchester United,2016-05-27,2018-12-18
+Ole Gunnar Solskjær,Manchester United,2018-12-19,2021-11-21
+Erik ten Hag,Manchester United,2022-06-01,2024-10-28
+Ruben Amorim,Manchester United,2024-11-11,2026-01-05
+Aitor Karanka,Middlesbrough,2015-07-01,2017-03-16
+Steve McClaren,Newcastle United,2015-07-01,2016-03-11
+Rafael Benítez,Newcastle United,2016-03-11,2019-06-30
+Steve Bruce,Newcastle United,2019-07-17,2021-10-20
+Eddie Howe,Newcastle United,2021-11-08,
+Alex Neil,Norwich City,2015-07-01,2017-03-10
+Daniel Farke,Norwich City,2017-05-25,2021-11-06
+Dean Smith,Norwich City,2021-11-15,2022-12-27
+Steve Cooper,Nottingham Forest,2021-09-21,2023-12-19
+Nuno Espírito Santo,Nottingham Forest,2023-12-20,2025-09-09
+Ange Postecoglou,Nottingham Forest,2025-09-09,2025-10-18
+Sean Dyche,Nottingham Forest,2025-10-21,
+Chris Ramsey,Queens Park Rangers,2015-07-01,2015-11-04
+Chris Wilder,Sheffield United,2016-05-12,2021-03-13
+Paul Heckingbottom,Sheffield United,2021-11-25,2023-12-05
+Chris Wilder,Sheffield United,2023-12-05,2025-06-18
+Ronald Koeman,Southampton,2015-07-01,2016-06-14
+Claude Puel,Southampton,2016-06-30,2017-06-14
+Mauricio Pellegrino,Southampton,2017-06-23,2018-03-12
+Mark Hughes,Southampton,2018-03-14,2018-12-03
+Ralph Hasenhüttl,Southampton,2018-12-06,2022-11-07
+Nathan Jones,Southampton,2022-11-10,2023-02-12
+Rubén Sellés,Southampton,2023-02-12,2023-05-28
+Russell Martin,Southampton,2023-06-21,2024-12-15
+Ivan Jurić,Southampton,2024-12-23,2025-04-07
+Mark Hughes,Stoke City,2015-07-01,2018-01-06
+Paul Lambert,Stoke City,2018-01-15,2018-05-18
+Dick Advocaat,Sunderland,2015-07-01,2015-10-04
+Sam Allardyce,Sunderland,2015-10-09,2016-07-22
+David Moyes,Sunderland,2016-07-23,2017-05-22
+Régis Le Bris,Sunderland,2024-07-01,
+Garry Monk,Swansea City,2015-07-01,2015-12-09
+Francesco Guidolin,Swansea City,2016-01-18,2016-10-03
+Bob Bradley,Swansea City,2016-10-03,2016-12-27
+Paul Clement,Swansea City,2017-01-03,2017-12-20
+Carlos Carvalhal,Swansea City,2017-12-28,2018-05-18
+Mauricio Pochettino,Tottenham Hotspur,2015-07-01,2019-11-19
+José Mourinho,Tottenham Hotspur,2019-11-20,2021-04-19
+Nuno Espírito Santo,Tottenham Hotspur,2021-06-30,2021-11-01
+Antonio Conte,Tottenham Hotspur,2021-11-02,2023-03-26
+Ange Postecoglou,Tottenham Hotspur,2023-06-06,2025-06-06
+Thomas Frank,Tottenham Hotspur,2025-06-12,
+Quique Sánchez Flores,Watford,2015-07-01,2016-05-15
+Walter Mazzarri,Watford,2016-07-01,2017-05-21
+Marco Silva,Watford,2017-05-27,2018-01-21
+Javi Gracia,Watford,2018-01-21,2019-09-07
+Quique Sánchez Flores,Watford,2019-09-07,2019-12-01
+Nigel Pearson,Watford,2019-12-08,2020-07-19
+Xisco Muñoz,Watford,2020-12-20,2021-10-03
+Claudio Ranieri,Watford,2021-10-04,2022-01-24
+Roy Hodgson,Watford,2022-01-25,2022-05-22
+Tony Pulis,West Bromwich Albion,2015-07-01,2017-11-20
+Alan Pardew,West Bromwich Albion,2017-11-29,2018-04-02
+Darren Moore,West Bromwich Albion,2018-04-02,2019-03-09
+Slaven Bilić,West Bromwich Albion,2019-06-13,2020-12-16
+Sam Allardyce,West Bromwich Albion,2020-12-16,2021-05-23
+Slaven Bilić,West Ham United,2015-07-01,2017-11-06
+David Moyes,West Ham United,2017-11-07,2018-05-16
+Manuel Pellegrini,West Ham United,2018-05-22,2019-12-28
+David Moyes,West Ham United,2019-12-29,2024-05-19
+Julen Lopetegui,West Ham United,2024-07-01,2025-01-08
+Graham Potter,West Ham United,2025-01-09,2025-09-27
+Nuno Espírito Santo,West Ham United,2025-09-27,
+Nuno Espírito Santo,Wolverhampton Wanderers,2017-05-31,2021-05-23
+Bruno Lage,Wolverhampton Wanderers,2021-06-09,2022-10-02
+Julen Lopetegui,Wolverhampton Wanderers,2022-11-14,2023-08-08
+Gary O'Neil,Wolverhampton Wanderers,2023-08-09,2024-12-15
+Vítor Pereira,Wolverhampton Wanderers,2024-12-19,2025-11-02
+Rob Edwards,Wolverhampton Wanderers,2025-11-12,

@@ -1,0 +1,38 @@
+{
+  "target": "total_fouls",
+  "prefix": "fouls__total_fouls",
+  "family": "poisson",
+  "alpha": null,
+  "clip": 45.0,
+  "standardize": true,
+  "n_features": 3,
+  "features": [
+    "elo_home",
+    "elo_away",
+    "elo_diff"
+  ],
+  "metrics": {
+    "train": {
+      "mae": 4.116985855176851,
+      "rmse": 5.1788619671579585
+    },
+    "val": {
+      "mae": 4.111899687063022,
+      "rmse": 5.10677379742095
+    },
+    "test": {
+      "mae": 4.18419565146119,
+      "rmse": 5.255161615769485
+    }
+  },
+  "saved_at": "2026-02-28T12:55:34",
+  "tag": null,
+  "data_files": {
+    "train": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\train_features.csv",
+    "val": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\val_features.csv",
+    "test": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\test_features.csv"
+  },
+  "data_hash_train": "d163df3eb88c447fb87174276fa4d3453b597709c51c1a28bcc99fd570686ae6",
+  "data_hash_val": "12c35ef08ce1759d1540dde55f588dc347637b94249d0c3cb66bf9a750b8cbcc",
+  "data_hash_test": "56c0eb9b5ae337a3e355f53e7c2d28bda96f384fbdd8716be24c8e86523e1100"
+}

@@ -1,0 +1,56 @@
+{
+  "target": "FTHG",
+  "prefix": "goals",
+  "family": "poisson",
+  "alpha": null,
+  "clip": 10.0,
+  "standardize": true,
+  "n_features": 21,
+  "features": [
+    "home_goals_for_roll3",
+    "home_goals_against_roll3",
+    "away_goals_for_roll3",
+    "away_goals_against_roll3",
+    "diff_goals_for_roll3",
+    "diff_goals_against_roll3",
+    "home_goals_for_roll5",
+    "home_goals_against_roll5",
+    "away_goals_for_roll5",
+    "away_goals_against_roll5",
+    "diff_goals_for_roll5",
+    "diff_goals_against_roll5",
+    "home_goals_for_roll10",
+    "home_goals_against_roll10",
+    "away_goals_for_roll10",
+    "away_goals_against_roll10",
+    "diff_goals_for_roll10",
+    "diff_goals_against_roll10",
+    "elo_home",
+    "elo_away",
+    "elo_diff"
+  ],
+  "metrics": {
+    "train": {
+      "mae": 0.9566747981384326,
+      "rmse": 1.2179650405671287
+    },
+    "val": {
+      "mae": 1.0687267166679901,
+      "rmse": 1.3519651586188737
+    },
+    "test": {
+      "mae": 0.9773852461068283,
+      "rmse": 1.2380725077380357
+    }
+  },
+  "saved_at": "2026-02-27T18:10:29",
+  "tag": null,
+  "data_files": {
+    "train": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\train_features.csv",
+    "val": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\val_features.csv",
+    "test": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\test_features.csv"
+  },
+  "data_hash_train": "766dacbc3469399143d7720e31e319f3e0404f7d029933d8609acba073e5032c",
+  "data_hash_val": "70fb64cfe717d85d681a46b76ed9b6b0867cf106790bd09ebca9c0f407c1db62",
+  "data_hash_test": "daf6911984a6b4183fff203bcd7def697f50a9193f31da3a16a3bab7934c9bb8"
+}
