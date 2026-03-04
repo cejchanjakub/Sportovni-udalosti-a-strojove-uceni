@@ -1,7 +1,9 @@
 # src/api_main.py
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+import json
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -35,6 +37,54 @@ from src.inference.services.fouls_away_service import FoulsAwayService
 
 
 app = FastAPI(title="dp_sazeni_ml inference")
+
+
+# ==========================================================
+# Cesty / meta
+# ==========================================================
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+LIVE_META_PATH = PROJECT_ROOT / "data" / "features" / "live_features_meta.json"
+
+
+def _read_live_meta() -> Optional[Dict[str, Any]]:
+    """
+    Načte metadata posledního refresh live features, pokud existují.
+    Vrací dict nebo None.
+    """
+    try:
+        if not LIVE_META_PATH.exists():
+            return None
+        return json.loads(LIVE_META_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        # Nechceme, aby meta read shodilo API
+        return None
+
+
+def _lookup_error_detail(err: Exception) -> Dict[str, Any]:
+    """
+    Sestaví detail pro 404 (fixture nenalezen).
+    """
+    meta = _read_live_meta()
+
+    hint_days = None
+    if isinstance(meta, dict):
+        hint_days = meta.get("days_ahead")
+
+    # Pokud meta nemáme, dej konzervativní doporučení
+    if not isinstance(hint_days, int):
+        hint_days = 30
+
+    return {
+        "error": str(err),
+        "reason": "fixture_not_found_in_live_features",
+        "live_features_meta": meta,
+        "hint": {
+            "what_to_do": "Spusť refresh live features, aby se stáhly budoucí fixtures a přepočítaly featury.",
+            "command": f"python -m src.inference.refresh_live_features_from_api --days-ahead {hint_days}",
+            "meta_path": str(LIVE_META_PATH),
+        },
+    }
 
 
 # ==========================================================
@@ -113,7 +163,8 @@ def predict(req: PredictRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
     except LookupError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        # NOVĚ: bohatší detail (včetně live_features_meta + hint na refresh)
+        raise HTTPException(status_code=404, detail=_lookup_error_detail(e))
 
     except FileNotFoundError as e:
         raise HTTPException(status_code=500, detail=str(e))

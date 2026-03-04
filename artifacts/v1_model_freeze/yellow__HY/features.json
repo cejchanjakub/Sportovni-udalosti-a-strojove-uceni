@@ -19,5 +19,10 @@
   "diff_yellow_against_roll10",
   "elo_home",
   "elo_away",
-  "elo_diff"
+  "elo_diff",
+  "HomeCoachTenureDays",
+  "AwayCoachTenureDays",
+  "ref_cards_avg_last20",
+  "ref_matches_count_last20",
+  "ref_unknown"
 ]

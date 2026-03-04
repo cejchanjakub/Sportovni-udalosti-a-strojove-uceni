@@ -3,9 +3,9 @@
   "prefix": "goals",
   "family": "poisson",
   "alpha": null,
-  "clip": 15.0,
-  "standardize": true,
-  "n_features": 21,
+  "clip": null,
+  "standardize": false,
+  "n_features": 23,
   "features": [
     "home_goals_for_roll3",
     "home_goals_against_roll3",
@@ -27,30 +27,32 @@
     "diff_goals_against_roll10",
     "elo_home",
     "elo_away",
-    "elo_diff"
+    "elo_diff",
+    "HomeCoachTenureDays",
+    "AwayCoachTenureDays"
   ],
   "metrics": {
     "train": {
-      "mae": 1.3113949496710124,
-      "rmse": 1.6365716641909636
+      "mae": 1.3108036681720814,
+      "rmse": 1.636445711695389
     },
     "val": {
-      "mae": 1.4071049359588688,
-      "rmse": 1.7509250366626385
+      "mae": 1.3819507460052267,
+      "rmse": 1.7204853025066777
     },
     "test": {
-      "mae": 1.3035031718594197,
-      "rmse": 1.6416381307403427
+      "mae": 1.293538491303274,
+      "rmse": 1.6283770699350506
     }
   },
-  "saved_at": "2026-02-22T21:40:27",
+  "saved_at": "2026-03-04T14:29:12",
   "tag": null,
   "data_files": {
     "train": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\train_features.csv",
     "val": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\val_features.csv",
     "test": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\test_features.csv"
   },
-  "data_hash_train": "766dacbc3469399143d7720e31e319f3e0404f7d029933d8609acba073e5032c",
-  "data_hash_val": "70fb64cfe717d85d681a46b76ed9b6b0867cf106790bd09ebca9c0f407c1db62",
-  "data_hash_test": "daf6911984a6b4183fff203bcd7def697f50a9193f31da3a16a3bab7934c9bb8"
+  "data_hash_train": "ea7c286f811329ae7ac55d9464d528ef5928b241913e5e0207e6ff7aa02a6c7b",
+  "data_hash_val": "df29d0e9fa9fc2b9f0b10a475dd0e3bb1756116ddc3d8f210e8d974f6897caea",
+  "data_hash_test": "4fcef2fb795b9c039272c2c3d8884add4488592392bc8c1f837267ef4e6f955a"
 }

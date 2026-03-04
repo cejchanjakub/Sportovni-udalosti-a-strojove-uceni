@@ -1,0 +1,29 @@
+Div,Date,Time,kickoff,HomeTeam,AwayTeam,Referee,FTHG,FTAG,FTR,HTHG,HTAG,HS,AS,HST,AST,HF,AF,HC,AC,HY,AY,HR,AR,AvgH,AvgD,AvgA,MaxH,MaxD,MaxA,season,source_file,match_id
+E0,2026-03-03,19:30,2026-03-03T19:30:00Z,AFC Bournemouth,Brentford FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538065
+E0,2026-03-03,19:30,2026-03-03T19:30:00Z,Everton FC,Burnley FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538068
+E0,2026-03-03,19:30,2026-03-03T19:30:00Z,Leeds United FC,Sunderland AFC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538070
+E0,2026-03-03,20:15,2026-03-03T20:15:00Z,Wolverhampton Wanderers FC,Liverpool FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538074
+E0,2026-03-04,19:30,2026-03-04T19:30:00Z,Aston Villa FC,Chelsea FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538066
+E0,2026-03-04,19:30,2026-03-04T19:30:00Z,Brighton & Hove Albion FC,Arsenal FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538067
+E0,2026-03-04,19:30,2026-03-04T19:30:00Z,Fulham FC,West Ham United FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538069
+E0,2026-03-04,19:30,2026-03-04T19:30:00Z,Manchester City FC,Nottingham Forest FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538071
+E0,2026-03-04,20:15,2026-03-04T20:15:00Z,Newcastle United FC,Manchester United FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538072
+E0,2026-03-05,20:00,2026-03-05T20:00:00Z,Tottenham Hotspur FC,Crystal Palace FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538073
+E0,2026-03-14,15:00,2026-03-14T15:00:00Z,Sunderland AFC,Brighton & Hove Albion FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538075
+E0,2026-03-14,15:00,2026-03-14T15:00:00Z,Burnley FC,AFC Bournemouth,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538079
+E0,2026-03-14,17:30,2026-03-14T17:30:00Z,Arsenal FC,Everton FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538077
+E0,2026-03-14,17:30,2026-03-14T17:30:00Z,Chelsea FC,Newcastle United FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538080
+E0,2026-03-14,20:00,2026-03-14T20:00:00Z,West Ham United FC,Manchester City FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538084
+E0,2026-03-15,14:00,2026-03-15T14:00:00Z,Crystal Palace FC,Leeds United FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538076
+E0,2026-03-15,14:00,2026-03-15T14:00:00Z,Manchester United FC,Aston Villa FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538082
+E0,2026-03-15,14:00,2026-03-15T14:00:00Z,Nottingham Forest FC,Fulham FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538083
+E0,2026-03-15,16:30,2026-03-15T16:30:00Z,Liverpool FC,Tottenham Hotspur FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538081
+E0,2026-03-16,20:00,2026-03-16T20:00:00Z,Brentford FC,Wolverhampton Wanderers FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538078
+E0,2026-03-20,20:00,2026-03-20T20:00:00Z,AFC Bournemouth,Manchester United FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538085
+E0,2026-03-21,12:30,2026-03-21T12:30:00Z,Brighton & Hove Albion FC,Liverpool FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538087
+E0,2026-03-21,15:00,2026-03-21T15:00:00Z,Fulham FC,Burnley FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538089
+E0,2026-03-21,17:30,2026-03-21T17:30:00Z,Everton FC,Chelsea FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538088
+E0,2026-03-21,20:00,2026-03-21T20:00:00Z,Leeds United FC,Brentford FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538090
+E0,2026-03-22,12:00,2026-03-22T12:00:00Z,Newcastle United FC,Sunderland AFC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538092
+E0,2026-03-22,14:15,2026-03-22T14:15:00Z,Aston Villa FC,West Ham United FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538086
+E0,2026-03-22,14:15,2026-03-22T14:15:00Z,Tottenham Hotspur FC,Nottingham Forest FC,,,,,,,,,,,,,,,,,,,,,,,,,2025-26,football-data-api,api_538093

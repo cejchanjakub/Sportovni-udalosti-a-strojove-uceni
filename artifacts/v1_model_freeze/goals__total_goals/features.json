@@ -19,5 +19,7 @@
   "diff_goals_against_roll10",
   "elo_home",
   "elo_away",
-  "elo_diff"
+  "elo_diff",
+  "HomeCoachTenureDays",
+  "AwayCoachTenureDays"
 ]

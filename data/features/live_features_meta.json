@@ -1,0 +1,12 @@
+{
+  "status": "ok",
+  "started_at_utc": "2026-03-02T21:50:14Z",
+  "finished_at_utc": "2026-03-02T21:50:17Z",
+  "days_ahead": 30,
+  "fixtures_rows": 28,
+  "live_features_rows": 28,
+  "live_features_cols": 137,
+  "out_fixtures": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\processed\\live_fixtures.csv",
+  "out_live_features": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\live_features.csv",
+  "out_meta": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\live_features_meta.json"
+}

@@ -97,22 +97,26 @@ def pick_feature_columns(df: pd.DataFrame, prefix: str) -> List[str]:
 def add_referee_features(df: pd.DataFrame, prefix: str, current_feats: List[str]) -> List[str]:
     """
     Referee featury pouze pro:
-    - fouls  -> ref_fouls_avg_last20_shrunk + ref_matches_count_last20
-    - yellow/cards -> ref_yellow_avg_last20_shrunk + ref_matches_count_last20
-    dle MODEL FREEZE.
+    - fouls  -> ref_fouls_avg_last20 + ref_matches_count_last20 + ref_unknown
+    - yellow/cards -> ref_cards_avg_last20 + ref_matches_count_last20 + ref_unknown
+
+    Názvy sloupců odpovídají výstupu build_features_all.py (compute_referee_features_for_all).
     """
     cols = set(df.columns.tolist())
     feats = list(current_feats)
 
+    # Společný flag pro oba trhy
+    shared = ["ref_matches_count_last20", "ref_unknown"]
+
     if prefix == "fouls":
-        ref_cols = ["ref_fouls_avg_last20_shrunk", "ref_matches_count_last20"]
+        ref_cols = ["ref_fouls_avg_last20"] + shared
         feats += [c for c in ref_cols if c in cols]
 
     if prefix in ("yellow", "cards"):
-        ref_cols = ["ref_yellow_avg_last20_shrunk", "ref_matches_count_last20"]
+        ref_cols = ["ref_cards_avg_last20"] + shared
         feats += [c for c in ref_cols if c in cols]
 
-    # deduplikace
+    # Deduplikace při zachování pořadí
     seen = set()
     out = []
     for c in feats:
