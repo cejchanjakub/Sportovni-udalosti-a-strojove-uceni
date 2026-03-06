@@ -5,7 +5,7 @@
   "alpha": null,
   "clip": null,
   "standardize": false,
-  "n_features": 23,
+  "n_features": 53,
   "features": [
     "home_shotsot_for_roll3",
     "home_shotsot_against_roll3",
@@ -28,31 +28,61 @@
     "elo_home",
     "elo_away",
     "elo_diff",
+    "home_days_rest",
+    "away_days_rest",
+    "days_rest_diff",
+    "is_midweek",
     "HomeCoachTenureDays",
-    "AwayCoachTenureDays"
+    "AwayCoachTenureDays",
+    "CoachTenureDiff",
+    "NewHomeCoach_30",
+    "NewAwayCoach_30",
+    "HomeCoachTenure_log1p",
+    "AwayCoachTenure_log1p",
+    "home_table_pos",
+    "away_table_pos",
+    "table_pos_diff",
+    "home_table_points",
+    "away_table_points",
+    "table_points_diff",
+    "home_points_roll3",
+    "away_points_roll3",
+    "diff_points_roll3",
+    "home_points_roll5",
+    "away_points_roll5",
+    "diff_points_roll5",
+    "home_points_roll10",
+    "away_points_roll10",
+    "diff_points_roll10",
+    "home_form_home_roll5",
+    "away_form_away_roll5",
+    "diff_form_ha_roll5",
+    "home_form_home_roll10",
+    "away_form_away_roll10",
+    "diff_form_ha_roll10"
   ],
   "metrics": {
     "train": {
-      "mae": 2.4429810476974723,
-      "rmse": 3.068464017980812
+      "mae": 2.434080716469056,
+      "rmse": 3.0564338589557365
     },
     "val": {
-      "mae": 2.5956386108759513,
-      "rmse": 3.3587606685681366
+      "mae": 2.6226270566920165,
+      "rmse": 3.369439707536367
     },
     "test": {
-      "mae": 2.3754028613101426,
-      "rmse": 3.0122264849512965
+      "mae": 2.3914224076781676,
+      "rmse": 3.021375215969622
     }
   },
-  "saved_at": "2026-03-04T14:30:05",
+  "saved_at": "2026-03-04T20:20:30",
   "tag": null,
   "data_files": {
     "train": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\train_features.csv",
     "val": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\val_features.csv",
     "test": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\test_features.csv"
   },
-  "data_hash_train": "ea7c286f811329ae7ac55d9464d528ef5928b241913e5e0207e6ff7aa02a6c7b",
-  "data_hash_val": "df29d0e9fa9fc2b9f0b10a475dd0e3bb1756116ddc3d8f210e8d974f6897caea",
-  "data_hash_test": "4fcef2fb795b9c039272c2c3d8884add4488592392bc8c1f837267ef4e6f955a"
+  "data_hash_train": "fa97ddee1df4cb3c69a6aa2bf55328b8fc9636f8aa7d0e8fda862fa09c9eb332",
+  "data_hash_val": "3d573586c5eab3196415ade51d1978b7f0f535ce7f4ce0740670c85cef81a0c7",
+  "data_hash_test": "b1c5f6c8c238d000dcf476309478efd009cc0e4a41a95d1c3c380675ce7e5636"
 }

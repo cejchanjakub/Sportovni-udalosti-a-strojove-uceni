@@ -41,7 +41,6 @@ def load_split(csv_path: Path) -> pd.DataFrame:
 
 
 def safe_median_impute(df: pd.DataFrame) -> pd.DataFrame:
-    # robustní imputace: nejprve median, pak 0
     out = df.replace([np.inf, -np.inf], np.nan).copy()
     med = out.median(numeric_only=True)
     out = out.fillna(med).fillna(0)
@@ -72,10 +71,24 @@ def pick_feature_columns(df: pd.DataFrame, prefix: str) -> List[str]:
 
     # 2) globální featury (pokud existují) – safe pro všechny trhy
     global_candidates = [
+        # ELO
         "elo_home", "elo_away", "elo_diff",
-        "days_rest_home", "days_rest_away", "is_midweek",
-        "HomeCoachTenureDays", "AwayCoachTenureDays",
+        # Days rest
+        "home_days_rest", "away_days_rest", "days_rest_diff", "is_midweek",
+        # Coach
+        "HomeCoachTenureDays", "AwayCoachTenureDays", "CoachTenureDiff",
+        "NewHomeCoach_30", "NewAwayCoach_30",
+        "HomeCoachTenure_log1p", "AwayCoachTenure_log1p",
+        # Tabulka
         "home_table_pos", "away_table_pos", "table_pos_diff",
+        "home_table_points", "away_table_points", "table_points_diff",
+        # Forma (rolling win rate – varianta A: všechny zápasy)
+        "home_points_roll3", "away_points_roll3", "diff_points_roll3",
+        "home_points_roll5", "away_points_roll5", "diff_points_roll5",
+        "home_points_roll10", "away_points_roll10", "diff_points_roll10",
+        # Forma (rolling win rate – varianta B: home/away split)
+        "home_form_home_roll5", "away_form_away_roll5", "diff_form_ha_roll5",
+        "home_form_home_roll10", "away_form_away_roll10", "diff_form_ha_roll10",
     ]
     global_feats = [c for c in global_candidates if c in cols]
 
@@ -99,13 +112,10 @@ def add_referee_features(df: pd.DataFrame, prefix: str, current_feats: List[str]
     Referee featury pouze pro:
     - fouls  -> ref_fouls_avg_last20 + ref_matches_count_last20 + ref_unknown
     - yellow/cards -> ref_cards_avg_last20 + ref_matches_count_last20 + ref_unknown
-
-    Názvy sloupců odpovídají výstupu build_features_all.py (compute_referee_features_for_all).
     """
     cols = set(df.columns.tolist())
     feats = list(current_feats)
 
-    # Společný flag pro oba trhy
     shared = ["ref_matches_count_last20", "ref_unknown"]
 
     if prefix == "fouls":
@@ -116,7 +126,6 @@ def add_referee_features(df: pd.DataFrame, prefix: str, current_feats: List[str]
         ref_cols = ["ref_cards_avg_last20"] + shared
         feats += [c for c in ref_cols if c in cols]
 
-    # Deduplikace při zachování pořadí
     seen = set()
     out = []
     for c in feats:
@@ -189,21 +198,17 @@ def _safe_name(s: str) -> str:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--target", required=True, help="Cílový sloupec (např. total_cards, HF, AF, HST, HC...)")
-    ap.add_argument("--prefix", required=True, help="Typ trhu: goals|corners|shots|shotsot|fouls|yellow|cards ...")
-    ap.add_argument("--family", default="poisson", choices=["poisson", "negbin"], help="Rodina GLM")
-    ap.add_argument("--alpha", type=float, default=1.0, help="NegBin alpha (pouze pro family=negbin)")
-    ap.add_argument("--clip", type=float, default=None, help="Oříznutí targetu shora (např. 15 pro karty, 30 pro fouly)")
-    ap.add_argument("--standardize", action="store_true", help="Standardizovat featury (fit na TRAIN, apply na VAL/TEST)")
-
-    # DŮLEŽITÉ: jedeme z data/features (kde jsou rolling featury)
-    ap.add_argument("--data_dir", default=None, help="Cesta ke složce s *_features.csv (default: data/features)")
-
-    # Export artefaktů
-    ap.add_argument("--save_artifacts", action="store_true", help="Uložit finální model + metadata do artifacts/")
-    ap.add_argument("--version", default="v1_model_freeze", help="Verze artefaktů (složka pod artifacts/)")
-    ap.add_argument("--artifact_root", default=None, help="Kořen pro ukládání artefaktů (default: <project>/artifacts)")
-    ap.add_argument("--tag", default=None, help="Volitelný tag pro běh (např. 'baseline', 'final')")
+    ap.add_argument("--target", required=True)
+    ap.add_argument("--prefix", required=True)
+    ap.add_argument("--family", default="poisson", choices=["poisson", "negbin"])
+    ap.add_argument("--alpha", type=float, default=1.0)
+    ap.add_argument("--clip", type=float, default=None)
+    ap.add_argument("--standardize", action="store_true")
+    ap.add_argument("--data_dir", default=None)
+    ap.add_argument("--save_artifacts", action="store_true")
+    ap.add_argument("--version", default="v1_model_freeze")
+    ap.add_argument("--artifact_root", default=None)
+    ap.add_argument("--tag", default=None)
 
     args = ap.parse_args()
 
@@ -214,21 +219,19 @@ def main():
     data_dir = Path(args.data_dir) if args.data_dir else (root / "data" / "features")
 
     train_path = data_dir / "train_features.csv"
-    val_path = data_dir / "val_features.csv"
-    test_path = data_dir / "test_features.csv"
+    val_path   = data_dir / "val_features.csv"
+    test_path  = data_dir / "test_features.csv"
 
     train = load_split(train_path)
-    val = load_split(val_path)
-    test = load_split(test_path)
+    val   = load_split(val_path)
+    test  = load_split(test_path)
 
-    # Feature selection (freeze)
     feats = pick_feature_columns(train, PREFIX)
     feats = add_referee_features(train, PREFIX, feats)
 
-    # sanity: musí existovat i v val/test (jinak vyhodit)
-    common = [c for c in feats if c in val.columns and c in test.columns]
+    common  = [c for c in feats if c in val.columns and c in test.columns]
     dropped = [c for c in feats if c not in common]
-    feats = common
+    feats   = common
 
     if len(feats) == 0:
         raise RuntimeError(
@@ -241,48 +244,42 @@ def main():
     print(f"FAMILY: {args.family}")
     print(f"Standardize: {args.standardize}")
     if dropped:
-        print(f"Pozn.: Vyřazeno {len(dropped)} featur (nejsou ve VAL/TEST): {dropped[:15]}{'...' if len(dropped)>15 else ''}")
+        print(f"Pozn.: Vyřazeno {len(dropped)} featur: {dropped[:15]}{'...' if len(dropped)>15 else ''}")
 
     print(f"\nPoužité featury ({len(feats)}):")
     for c in feats:
         print(f"  {c}")
 
-    # Prepare X/y with correct standardization (fit on TRAIN only)
     scaler: Optional[StandardScaler] = None
     X_train, y_train, scaler = prepare_xy(train, TARGET, feats, args.standardize, scaler, fit_scaler=True)
-    X_val, y_val, _ = prepare_xy(val, TARGET, feats, args.standardize, scaler, fit_scaler=False)
-    X_test, y_test, _ = prepare_xy(test, TARGET, feats, args.standardize, scaler, fit_scaler=False)
+    X_val,   y_val,   _      = prepare_xy(val,   TARGET, feats, args.standardize, scaler, fit_scaler=False)
+    X_test,  y_test,  _      = prepare_xy(test,  TARGET, feats, args.standardize, scaler, fit_scaler=False)
 
-    # Clip target
     y_train_c = clip_target(y_train, args.clip)
-    y_val_c = clip_target(y_val, args.clip)
-    y_test_c = clip_target(y_test, args.clip)
+    y_val_c   = clip_target(y_val,   args.clip)
+    y_test_c  = clip_target(y_test,  args.clip)
 
-    # Fit GLM
     if args.family == "poisson":
         fam = sm.families.Poisson()
     else:
         fam = sm.families.NegativeBinomial(alpha=float(args.alpha))
 
     model = sm.GLM(y_train_c, X_train, family=fam)
-    res = model.fit()
+    res   = model.fit()
 
-    # Predict mean (lambda)
     pred_train = res.predict(X_train)
-    pred_val = res.predict(X_val)
-    pred_test = res.predict(X_test)
+    pred_val   = res.predict(X_val)
+    pred_test  = res.predict(X_test)
 
-    # Eval (basic)
     m_train = eval_basic(y_train_c, pred_train)
-    m_val = eval_basic(y_val_c, pred_val)
-    m_test = eval_basic(y_test_c, pred_test)
+    m_val   = eval_basic(y_val_c,   pred_val)
+    m_test  = eval_basic(y_test_c,  pred_test)
 
     print("\n--- Výsledky (MAE/RMSE na mean predikci) ---")
     print(f"TRAIN: MAE={m_train['mae']:.4f} | RMSE={m_train['rmse']:.4f}")
     print(f"VAL:   MAE={m_val['mae']:.4f} | RMSE={m_val['rmse']:.4f}")
     print(f"TEST:  MAE={m_test['mae']:.4f} | RMSE={m_test['rmse']:.4f}")
 
-    # Diagnostika
     print("\n--- GLM summary (zkráceně) ---")
     print(f"nobs(train): {int(res.nobs)}")
     try:
@@ -294,7 +291,6 @@ def main():
     except Exception:
         pass
 
-    # Meta
     meta = {
         "target": TARGET,
         "prefix": PREFIX,
@@ -309,50 +305,40 @@ def main():
     print("\n--- META (pro kontrolu) ---")
     print(json.dumps(meta, ensure_ascii=False, indent=2))
 
-    # ----------------------------
-    # Save artifacts (MODEL FREEZE)
-    # ----------------------------
     if args.save_artifacts:
         artifact_root = Path(args.artifact_root) if args.artifact_root else (root / "artifacts")
         run_dir = artifact_root / args.version / _safe_name(f"{PREFIX}__{TARGET}")
         run_dir.mkdir(parents=True, exist_ok=True)
 
-        # 1) statsmodels Results
         model_path = run_dir / "model.sm"
         res.save(str(model_path))
 
-        # 2) scaler
         if args.standardize:
-            scaler_path = run_dir / "scaler.joblib"
-            joblib.dump(scaler, scaler_path)
+            joblib.dump(scaler, run_dir / "scaler.joblib")
 
-        # 3) feature order
-        features_path = run_dir / "features.json"
-        with open(features_path, "w", encoding="utf-8") as f:
+        with open(run_dir / "features.json", "w", encoding="utf-8") as f:
             json.dump(feats, f, ensure_ascii=False, indent=2)
 
-        # 4) meta + hashes
         stamp = dt.datetime.now().isoformat(timespec="seconds")
         meta["saved_at"] = stamp
         meta["tag"] = args.tag
         meta["data_files"] = {
             "train": str(train_path),
-            "val": str(val_path),
-            "test": str(test_path),
+            "val":   str(val_path),
+            "test":  str(test_path),
         }
         try:
             meta["data_hash_train"] = _hash_file(train_path)
-            meta["data_hash_val"] = _hash_file(val_path)
-            meta["data_hash_test"] = _hash_file(test_path)
+            meta["data_hash_val"]   = _hash_file(val_path)
+            meta["data_hash_test"]  = _hash_file(test_path)
         except Exception as e:
             meta["data_hash_error"] = str(e)
 
-        meta_path = run_dir / "meta.json"
-        with open(meta_path, "w", encoding="utf-8") as f:
+        with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
             json.dump(meta, f, ensure_ascii=False, indent=2)
 
         print(f"\n[ARTIFACTS SAVED] {run_dir}")
-        print(f"  - {model_path.name}")
+        print(f"  - model.sm")
         if args.standardize:
             print("  - scaler.joblib")
         print("  - features.json")
