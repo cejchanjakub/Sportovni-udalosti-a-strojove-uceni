@@ -51,5 +51,13 @@
   "diff_form_ha_roll5",
   "home_form_home_roll10",
   "away_form_away_roll10",
-  "diff_form_ha_roll10"
+  "diff_form_ha_roll10",
+  "h2h_avg_yellow_last3",
+  "h2h_avg_yellow_last5",
+  "h2h_avg_goals_last3",
+  "h2h_avg_goals_last5",
+  "h2h_avg_corners_last3",
+  "h2h_avg_corners_last5",
+  "h2h_avg_fouls_last3",
+  "h2h_matches_count"
 ]

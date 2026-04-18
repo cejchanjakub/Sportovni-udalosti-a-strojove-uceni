@@ -1,5 +1,5 @@
 {
-  "saved_at": "2026-03-04T20:20:41",
+  "saved_at": "2026-04-17T22:07:05",
   "target": "1X2",
   "model": "LogisticRegression (multinomial)",
   "C": 1.0,
@@ -62,22 +62,22 @@
   ],
   "metrics": {
     "train": {
-      "log_loss": 0.9492526259562508,
-      "brier": 0.18727756627394884,
-      "accuracy": 0.556390977443609
+      "log_loss": 0.9517164492102592,
+      "brier": 0.1877637879666211,
+      "accuracy": 0.5545112781954887
     },
     "val": {
-      "log_loss": 0.9468175500372378,
-      "brier": 0.18547525166306156,
+      "log_loss": 0.9450936974073703,
+      "brier": 0.1856387471268134,
       "accuracy": 0.5789473684210527
     },
     "test": {
-      "log_loss": 0.9949033888666283,
-      "brier": 0.19909230179156243,
-      "accuracy": 0.5105263157894737
+      "log_loss": 0.9985714661206256,
+      "brier": 0.19951632199782546,
+      "accuracy": 0.5131578947368421
     }
   },
-  "data_hash_train": "fa97ddee1df4cb3c69a6aa2bf55328b8fc9636f8aa7d0e8fda862fa09c9eb332",
-  "data_hash_val": "3d573586c5eab3196415ade51d1978b7f0f535ce7f4ce0740670c85cef81a0c7",
-  "data_hash_test": "b1c5f6c8c238d000dcf476309478efd009cc0e4a41a95d1c3c380675ce7e5636"
+  "data_hash_train": "786d4fe99b1a31d399f539cfe96745c0e18705db99eb85253d1e8ec5b0d50799",
+  "data_hash_val": "88b58fbeba2ff20981a8b47212d7bdce6d6536ee17e3917e840361e47f933124",
+  "data_hash_test": "de0d53dd931fcee5c3174664595fb0659144ff24f82297e6c57fd5d46f3ec555"
 }

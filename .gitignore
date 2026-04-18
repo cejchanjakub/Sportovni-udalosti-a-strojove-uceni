@@ -1,0 +1,86 @@
+# ─── Python ───────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ─── Prostředí ────────────────────────────────────────────
+.env
+.venv/
+venv/
+env/
+*.env
+
+# ─── IDE ──────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+workspace.xml
+
+# ─── Pytest ───────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ─── Data – generovaná (lze zregenerovat skriptem) ────────
+data/raw/
+data/interim/
+data/predictions/
+data/features/
+data/processed/calibration_summary_multiline.csv
+data/processed/calibrator_over25_isotonic.joblib
+data/processed/calibrator_over25_platt.joblib
+data/processed/EPL_2024-25_features.csv
+data/processed/EPL_2024-25_processed.csv
+data/processed/EPL_all_seasons_base.csv
+data/processed/EPL_all_seasons_features.csv
+data/processed/EPL_all_seasons_processed.csv
+data/processed/goals_*.csv
+data/processed/live.csv
+data/processed/live_fixtures.csv
+data/processed/live_norm.csv
+data/processed/live_with_coaches.csv
+data/processed/live_with_coach_features.csv
+data/processed/managers_norm.csv
+data/processed/match_odds_*.csv
+data/processed/ou_*.csv
+data/processed/over25_predictions.csv
+data/processed/team_aliases_final.csv
+data/processed/team_aware_poisson_test_predictions.csv
+data/processed/team_totals_ou_fair_odds_test.csv
+data/processed/test*.csv
+data/processed/train*.csv
+data/processed/val*.csv
+
+# ─── Artefakty – binární modely (velké soubory) ───────────
+artifacts/v1_model_freeze/**/*.joblib
+artifacts/v1_model_freeze/**/*.sm
+# meta.json a features.json TRACKUJEME (malé, užitečné)
+!artifacts/v1_model_freeze/**/meta.json
+!artifacts/v1_model_freeze/**/features.json
+
+# ─── Dočasné soubory z vývoje ─────────────────────────────
+*.tmp
+*.log
+*.bak
+tipsport_api_discovery.json
+team_aliases_suggested.csv
+
+# ─── Dočasné skripty z vývoje (kořen projektu) ────────────
+check_models.py
+diag_draw.py
+eval_1x2.py
+eval_1x2_eval.py
+eval_count_models.py
+
+# ─── Claude worktrees (interní) ───────────────────────────
+.claude/
+
+# ─── Jupyter ──────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb

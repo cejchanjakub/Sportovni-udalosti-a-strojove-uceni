@@ -6,9 +6,10 @@ import numpy as np
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
-FEATURES_DIR = PROJECT_ROOT / "data" / "features"
+FEATURES_DIR  = PROJECT_ROOT / "data" / "features"
 
-ROLL_WINDOWS = [3, 5, 10]
+ROLL_WINDOWS   = [3, 5, 10]
+MANAGERS_PATH  = PROCESSED_DIR / "managers_norm.csv"
 
 
 # ============================================================
@@ -30,7 +31,7 @@ def _ensure_numeric(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
 
 
 # ============================================================
-# ROLLING FEATURES (góly, rohy, fauly atd.)
+# ROLLING FEATURES
 # ============================================================
 
 def _rolling_team_features(df: pd.DataFrame, home_stat: str, away_stat: str, prefix: str) -> pd.DataFrame:
@@ -62,34 +63,20 @@ def _rolling_team_features(df: pd.DataFrame, home_stat: str, away_stat: str, pre
 
 
 # ============================================================
-# FORMA – rolling win rate (body za zápas)
-# Varianta A: všechny zápasy dohromady
-# Varianta B: oddělená forma doma vs. venku
+# FORMA
 # ============================================================
 
 def _add_form_features(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Přidá rolling win rate featury:
-    - Varianta A (všechny zápasy): home_points_roll3/5/10, away_points_roll3/5/10, diff_points_roll3/5/10
-    - Varianta B (home/away split): home_form_home_roll5/10, away_form_away_roll5/10, diff_form_ha_roll5/10
-    """
     if "FTHG" not in df.columns or "FTAG" not in df.columns:
         return df
-
     df = df.copy()
-
-    # Body: 3=výhra, 1=remíza, 0=prohra
     conditions = [df["FTHG"] > df["FTAG"], df["FTHG"] == df["FTAG"]]
     df["_home_points"] = np.select(conditions, [3.0, 1.0], default=0.0)
     df["_away_points"] = np.select(
         [df["FTAG"] > df["FTHG"], df["FTHG"] == df["FTAG"]], [3.0, 1.0], default=0.0
     )
-
-    # Live zápasy bez výsledků
     mask_no_result = df["FTHG"].isna() | df["FTAG"].isna()
     df.loc[mask_no_result, ["_home_points", "_away_points"]] = np.nan
-
-    # VARIANTA A: forma přes všechny zápasy
     for w in ROLL_WINDOWS:
         df[f"home_points_roll{w}"] = (
             df.groupby("HomeTeam")["_home_points"]
@@ -100,8 +87,6 @@ def _add_form_features(df: pd.DataFrame) -> pd.DataFrame:
             .transform(lambda x: x.shift().rolling(w).mean())
         )
         df[f"diff_points_roll{w}"] = df[f"home_points_roll{w}"] - df[f"away_points_roll{w}"]
-
-    # VARIANTA B: forma oddělená doma vs. venku (okna 5 a 10)
     for w in [5, 10]:
         df[f"home_form_home_roll{w}"] = (
             df.groupby("HomeTeam")["_home_points"]
@@ -114,61 +99,41 @@ def _add_form_features(df: pd.DataFrame) -> pd.DataFrame:
         df[f"diff_form_ha_roll{w}"] = (
             df[f"home_form_home_roll{w}"] - df[f"away_form_away_roll{w}"]
         )
-
     df = df.drop(columns=["_home_points", "_away_points"], errors="ignore")
     return df
 
 
 # ============================================================
-# SEZÓNNÍ POZICE V TABULCE (pre-match, no leakage)
+# TABULKA
 # ============================================================
 
 def _add_table_position_features(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Průběžně počítá tabulku před každým zápasem a přidává:
-    - home_table_pos, away_table_pos (1=první, 20=poslední)
-    - home_table_points, away_table_points (body v sezóně)
-    - table_pos_diff, table_points_diff
-    """
     if "FTHG" not in df.columns or "FTAG" not in df.columns:
         return df
     if "season" not in df.columns:
         return df
-
     df = df.copy()
     df["kickoff_dt"] = pd.to_datetime(df["Date"])
     df = df.sort_values(["season", "kickoff_dt"]).reset_index(drop=True)
-
     home_pos_list = [None] * len(df)
     away_pos_list = [None] * len(df)
     home_pts_list = [None] * len(df)
     away_pts_list = [None] * len(df)
-
     for season, season_idx in df.groupby("season", sort=False).groups.items():
         season_df = df.loc[season_idx].sort_values("kickoff_dt")
         points: dict[str, int] = {}
-
-        # Inicializuj body pro všechny týmy v sezóně
         all_teams = set(season_df["HomeTeam"].tolist() + season_df["AwayTeam"].tolist())
         for t in all_teams:
             points[t] = 0
-
         for idx, row in season_df.iterrows():
             home = str(row["HomeTeam"])
             away = str(row["AwayTeam"])
-
-            # Pre-match body a pozice
-            pts_home = points.get(home, 0)
-            pts_away = points.get(away, 0)
-            home_pts_list[idx] = pts_home
-            away_pts_list[idx] = pts_away
-
+            home_pts_list[idx] = points.get(home, 0)
+            away_pts_list[idx] = points.get(away, 0)
             sorted_teams = sorted(points.items(), key=lambda x: x[1], reverse=True)
             pos_map = {team: i + 1 for i, (team, _) in enumerate(sorted_teams)}
             home_pos_list[idx] = pos_map.get(home, len(all_teams))
             away_pos_list[idx] = pos_map.get(away, len(all_teams))
-
-            # Update po zápase
             hg = row.get("FTHG")
             ag = row.get("FTAG")
             if pd.isna(hg) or pd.isna(ag):
@@ -180,14 +145,12 @@ def _add_table_position_features(df: pd.DataFrame) -> pd.DataFrame:
                 points[away] = points.get(away, 0) + 1
             else:
                 points[away] = points.get(away, 0) + 3
-
-    df["home_table_pos"] = home_pos_list
-    df["away_table_pos"] = away_pos_list
+    df["home_table_pos"]    = home_pos_list
+    df["away_table_pos"]    = away_pos_list
     df["home_table_points"] = home_pts_list
     df["away_table_points"] = away_pts_list
-    df["table_pos_diff"] = pd.to_numeric(df["home_table_pos"], errors="coerce") - pd.to_numeric(df["away_table_pos"], errors="coerce")
+    df["table_pos_diff"]    = pd.to_numeric(df["home_table_pos"], errors="coerce") - pd.to_numeric(df["away_table_pos"], errors="coerce")
     df["table_points_diff"] = pd.to_numeric(df["home_table_points"], errors="coerce") - pd.to_numeric(df["away_table_points"], errors="coerce")
-
     return df
 
 
@@ -196,39 +159,138 @@ def _add_table_position_features(df: pd.DataFrame) -> pd.DataFrame:
 # ============================================================
 
 def _add_days_rest(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Počet dní od posledního zápasu pro každý tým (pre-match).
-    - home_days_rest, away_days_rest, days_rest_diff
-    - is_midweek (út/st/čt = 1)
-    """
     df = df.copy()
     df["kickoff_dt"] = pd.to_datetime(df["Date"])
     df = df.sort_values("kickoff_dt").reset_index(drop=True)
-
     last_match: dict[str, pd.Timestamp] = {}
     home_rest, away_rest = [], []
-
     for _, row in df.iterrows():
         home = str(row["HomeTeam"])
         away = str(row["AwayTeam"])
         d = row["kickoff_dt"]
-
         home_rest.append((d - last_match[home]).days if home in last_match else np.nan)
         away_rest.append((d - last_match[away]).days if away in last_match else np.nan)
-
         last_match[home] = d
         last_match[away] = d
-
     df["home_days_rest"] = home_rest
     df["away_days_rest"] = away_rest
     df["days_rest_diff"] = df["home_days_rest"] - df["away_days_rest"]
-    df["is_midweek"] = df["kickoff_dt"].dt.dayofweek.isin([1, 2, 3]).astype(int)
-
+    df["is_midweek"]     = df["kickoff_dt"].dt.dayofweek.isin([1, 2, 3]).astype(int)
     return df
 
 
 # ============================================================
-# ELO – počítá se na CELÉM datasetu chronologicky
+# COACH FEATURES
+# ============================================================
+
+def _load_manager_intervals() -> pd.DataFrame | None:
+    if not MANAGERS_PATH.exists():
+        print(f"[WARN] Chybí {MANAGERS_PATH} – coach featury budou NaN.")
+        return None
+
+    man = pd.read_csv(MANAGERS_PATH, low_memory=False)
+
+    def _parse_dates(s: pd.Series) -> pd.Series:
+        s = s.astype(str).str.strip()
+        out = pd.Series(pd.NaT, index=s.index, dtype="datetime64[ns]")
+        mask_empty = (s == "") | (s.str.lower() == "nan")
+        s2 = s.mask(mask_empty, other=pd.NA)
+        mask_dash  = s2.notna() & s2.str.contains("-", regex=False)
+        mask_slash = s2.notna() & s2.str.contains("/", regex=False)
+        mask_rest  = s2.notna() & ~mask_dash & ~mask_slash
+        out.loc[mask_dash]  = pd.to_datetime(s2.loc[mask_dash],  errors="coerce", dayfirst=False)
+        out.loc[mask_slash] = pd.to_datetime(s2.loc[mask_slash], errors="coerce", dayfirst=True)
+        out.loc[mask_rest]  = pd.to_datetime(s2.loc[mask_rest],  errors="coerce", dayfirst=True)
+        return out
+
+    man["start_date"] = _parse_dates(man["start_date"])
+    man["end_date"]   = _parse_dates(man["end_date"])
+    man = man[man["start_date"].notna()].copy()
+    man = man[(man["team_std"].astype(str).str.strip() != "") &
+              (man["coach_name"].astype(str).str.strip() != "")].copy()
+    man = man.sort_values(["team_std", "start_date"]).reset_index(drop=True)
+
+    man["_next_start"] = man.groupby("team_std")["start_date"].shift(-1)
+    next_end = man["_next_start"] - pd.Timedelta(days=1)
+    man["end_date"] = man["end_date"].where(man["end_date"].notna(), next_end)
+    man["end_date"] = man["end_date"].where(
+        man["_next_start"].isna() | (man["end_date"] < man["_next_start"]), next_end
+    )
+    man["end_date"] = man["end_date"].fillna(pd.Timestamp("2100-01-01"))
+    man = man.drop(columns=["_next_start"])
+    return man
+
+
+def _coach_for_team_on_date(intervals: pd.DataFrame, team: str, date: pd.Timestamp):
+    if pd.isna(date) or not team:
+        return None, None
+    sub = intervals[intervals["team_std"] == team]
+    if sub.empty:
+        return None, None
+    hit = sub[(sub["start_date"] <= date) & (date <= sub["end_date"])]
+    if not hit.empty:
+        row = hit.iloc[-1]
+        return row["coach_name"], row["start_date"]
+    prev = sub[sub["start_date"] <= date]
+    if not prev.empty:
+        row = prev.iloc[-1]
+        return row["coach_name"], row["start_date"]
+    return None, None
+
+
+def _add_coach_features(df: pd.DataFrame, intervals: pd.DataFrame | None) -> pd.DataFrame:
+    df = df.copy()
+
+    # Kickoff datetime – ošetři timezone
+    if "kickoff" in df.columns:
+        kdt = pd.to_datetime(df["kickoff"], errors="coerce", utc=True)
+        df["kickoff_dt"] = kdt.dt.tz_localize(None)
+    else:
+        df["kickoff_dt"] = pd.to_datetime(df["Date"], errors="coerce", dayfirst=True)
+
+    if intervals is None:
+        for col in ["HomeCoachTenureDays", "AwayCoachTenureDays", "CoachTenureDiff",
+                    "HomeCoachTenure_log1p", "AwayCoachTenure_log1p",
+                    "NewHomeCoach_30", "NewAwayCoach_30",
+                    "NewHomeCoach_60", "NewAwayCoach_60",
+                    "NewHomeCoach_90", "NewAwayCoach_90"]:
+            df[col] = np.nan
+        return df
+
+    home_tenure, away_tenure = [], []
+    for _, row in df.iterrows():
+        d  = row["kickoff_dt"]
+        ht = str(row["HomeTeam"]).strip()
+        at = str(row["AwayTeam"]).strip()
+        _, hc_start = _coach_for_team_on_date(intervals, ht, d)
+        _, ac_start = _coach_for_team_on_date(intervals, at, d)
+        if hc_start is None or pd.isna(d):
+            home_tenure.append(np.nan)
+        else:
+            home_tenure.append((d.normalize() - hc_start.normalize()).days)
+        if ac_start is None or pd.isna(d):
+            away_tenure.append(np.nan)
+        else:
+            away_tenure.append((d.normalize() - ac_start.normalize()).days)
+
+    df["HomeCoachTenureDays"] = pd.array(home_tenure, dtype="Float64")
+    df["AwayCoachTenureDays"] = pd.array(away_tenure, dtype="Float64")
+    df["HomeCoachTenure_log1p"] = np.log1p(pd.to_numeric(df["HomeCoachTenureDays"], errors="coerce"))
+    df["AwayCoachTenure_log1p"] = np.log1p(pd.to_numeric(df["AwayCoachTenureDays"], errors="coerce"))
+    df["CoachTenureDiff"] = (
+        pd.to_numeric(df["HomeCoachTenureDays"], errors="coerce") -
+        pd.to_numeric(df["AwayCoachTenureDays"], errors="coerce")
+    )
+    for d in [30, 60, 90]:
+        df[f"NewHomeCoach_{d}"] = (pd.to_numeric(df["HomeCoachTenureDays"], errors="coerce") <= d).astype("Int64")
+        df[f"NewAwayCoach_{d}"] = (pd.to_numeric(df["AwayCoachTenureDays"], errors="coerce") <= d).astype("Int64")
+        df.loc[df["HomeCoachTenureDays"].isna(), f"NewHomeCoach_{d}"] = pd.NA
+        df.loc[df["AwayCoachTenureDays"].isna(), f"NewAwayCoach_{d}"] = pd.NA
+    return df
+
+
+# ============================================================
+# ELO
 # ============================================================
 
 def compute_elo_for_all(
@@ -252,17 +314,14 @@ def compute_elo_for_all(
         away = str(row["AwayTeam"])
         eh = elo.get(home, base_elo)
         ea = elo.get(away, base_elo)
-
         elo_home_list.append(eh)
         elo_away_list.append(ea)
         elo_diff_list.append((eh + home_adv) - ea)
         match_ids.append(row.get("match_id", f"{home}_{away}_{row['kickoff_dt']}"))
-
         hg = row.get("FTHG")
         ag = row.get("FTAG")
         if pd.isna(hg) or pd.isna(ag):
             continue
-
         s_home = 1.0 if hg > ag else (0.5 if hg == ag else 0.0)
         e_home = expected(eh + home_adv, ea)
         elo[home] = eh + k * (s_home - e_home)
@@ -277,7 +336,7 @@ def compute_elo_for_all(
 
 
 # ============================================================
-# REFEREE FEATURES – počítá se na CELÉM datasetu chronologicky
+# REFEREE FEATURES
 # ============================================================
 
 def compute_referee_features_for_all(
@@ -290,49 +349,32 @@ def compute_referee_features_for_all(
     df = all_df.copy()
     df["kickoff_dt"] = pd.to_datetime(df["Date"])
     df = df.sort_values("kickoff_dt").reset_index(drop=True)
-
     for col in [cards_col, fouls_col]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
-
     records = []
     ref_history: dict[str, list[dict]] = {}
-
     for _, row in df.iterrows():
         ref = str(row.get("Referee", "")).strip()
         match_id = row.get("match_id", None)
         is_unknown = ref in ("", "nan", "Unknown")
-
         all_so_far = [r for hist in ref_history.values() for r in hist]
-        league_cards_median = float(np.median([
-            r["cards"] for r in all_so_far if not np.isnan(r["cards"])
-        ])) if all_so_far else 0.0
-        league_fouls_median = float(np.median([
-            r["fouls"] for r in all_so_far if not np.isnan(r["fouls"])
-        ])) if all_so_far else 0.0
-
+        league_cards_median = float(np.median([r["cards"] for r in all_so_far if not np.isnan(r["cards"])])) if all_so_far else 0.0
+        league_fouls_median = float(np.median([r["fouls"] for r in all_so_far if not np.isnan(r["fouls"])])) if all_so_far else 0.0
         if is_unknown or ref not in ref_history or len(ref_history[ref]) == 0:
-            records.append({
-                "match_id": match_id,
-                "ref_matches_count_last20": 0.0,
-                "ref_cards_avg_last20": league_cards_median,
-                "ref_fouls_avg_last20": league_fouls_median,
-                "ref_unknown": 1.0,
-            })
+            records.append({"match_id": match_id, "ref_matches_count_last20": 0.0,
+                            "ref_cards_avg_last20": league_cards_median,
+                            "ref_fouls_avg_last20": league_fouls_median, "ref_unknown": 1.0})
         else:
             last = ref_history[ref][-window:]
             n = float(len(last))
             raw_cards = float(np.nanmean([r["cards"] for r in last])) if last else league_cards_median
             raw_fouls = float(np.nanmean([r["fouls"] for r in last])) if last else league_fouls_median
             w = n / (n + k_prior)
-            records.append({
-                "match_id": match_id,
-                "ref_matches_count_last20": n,
-                "ref_cards_avg_last20": w * raw_cards + (1 - w) * league_cards_median,
-                "ref_fouls_avg_last20": w * raw_fouls + (1 - w) * league_fouls_median,
-                "ref_unknown": 0.0,
-            })
-
+            records.append({"match_id": match_id, "ref_matches_count_last20": n,
+                            "ref_cards_avg_last20": w * raw_cards + (1 - w) * league_cards_median,
+                            "ref_fouls_avg_last20": w * raw_fouls + (1 - w) * league_fouls_median,
+                            "ref_unknown": 0.0})
         if not is_unknown:
             cards_val = row.get(cards_col, np.nan)
             fouls_val = row.get(fouls_col, np.nan)
@@ -344,25 +386,136 @@ def compute_referee_features_for_all(
                 "cards": float(cards_val) if not pd.isna(cards_val) else np.nan,
                 "fouls": float(fouls_val) if not pd.isna(fouls_val) else np.nan,
             })
-
     return pd.DataFrame(records)
 
 
+
 # ============================================================
-# BUILD FEATURES FOR ONE SPLIT
+# H2H FEATURES
+# ============================================================
+
+def compute_h2h_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Vypočítá head-to-head (H2H) statistiky pro každý zápas.
+
+    Pro každý zápas (HomeTeam, AwayTeam, Date) najde předchozí
+    vzájemné zápasy (oba směry) a spočítá rolling statistiky.
+
+    Výstupní featury (jako DataFrame s match_id + h2h sloupce):
+      h2h_avg_yellow_last3   - průměr žlutých karet v posl. 3 H2H
+      h2h_avg_yellow_last5   - průměr žlutých karet v posl. 5 H2H
+      h2h_avg_goals_last3    - průměr gólů v posl. 3 H2H
+      h2h_avg_goals_last5    - průměr gólů v posl. 5 H2H
+      h2h_avg_corners_last3  - průměr rohů v posl. 3 H2H
+      h2h_avg_corners_last5  - průměr rohů v posl. 5 H2H
+      h2h_avg_fouls_last3    - průměr faulů v posl. 3 H2H
+      h2h_matches_count      - počet dostupných H2H zápasů
+    """
+    df = _sort_matches(df.copy())
+
+    h2h_cols = [
+        "h2h_avg_yellow_last3", "h2h_avg_yellow_last5",
+        "h2h_avg_goals_last3",  "h2h_avg_goals_last5",
+        "h2h_avg_corners_last3","h2h_avg_corners_last5",
+        "h2h_avg_fouls_last3",
+        "h2h_matches_count",
+    ]
+    for col in h2h_cols:
+        df[col] = np.nan
+
+    has_yellow  = "HY" in df.columns and "AY" in df.columns
+    has_goals   = "FTHG" in df.columns and "FTAG" in df.columns
+    has_corners = "HC" in df.columns and "AC" in df.columns
+    has_fouls   = "HF" in df.columns and "AF" in df.columns
+
+    if "Date" not in df.columns:
+        if "match_id" in df.columns:
+            return df[["match_id"] + h2h_cols]
+        return df[h2h_cols]
+
+    df["_date_dt"] = pd.to_datetime(df["Date"], errors="coerce")
+
+    for idx in df.index:
+        row  = df.loc[idx]
+        home = row.get("HomeTeam")
+        away = row.get("AwayTeam")
+        date = row.get("_date_dt")
+
+        if pd.isna(date) or not home or not away:
+            continue
+
+        # Předchozí vzájemné zápasy – oba směry
+        mask = (
+            (
+                ((df["HomeTeam"] == home) & (df["AwayTeam"] == away)) |
+                ((df["HomeTeam"] == away) & (df["AwayTeam"] == home))
+            ) &
+            (df["_date_dt"] < date)
+        )
+        h2h = df[mask].sort_values("_date_dt", ascending=False)
+        df.at[idx, "h2h_matches_count"] = float(len(h2h))
+
+        if h2h.empty:
+            continue
+
+        # Žluté karty
+        if has_yellow:
+            tot = h2h["HY"].fillna(0) + h2h["AY"].fillna(0)
+            valid = tot[h2h["HY"].notna() & h2h["AY"].notna()]
+            if len(valid) >= 1:
+                df.at[idx, "h2h_avg_yellow_last3"] = float(valid.head(3).mean())
+                df.at[idx, "h2h_avg_yellow_last5"] = float(valid.head(5).mean())
+
+        # Góly
+        if has_goals:
+            tot = h2h["FTHG"].fillna(0) + h2h["FTAG"].fillna(0)
+            valid = tot[h2h["FTHG"].notna() & h2h["FTAG"].notna()]
+            if len(valid) >= 1:
+                df.at[idx, "h2h_avg_goals_last3"] = float(valid.head(3).mean())
+                df.at[idx, "h2h_avg_goals_last5"] = float(valid.head(5).mean())
+
+        # Rohy
+        if has_corners:
+            tot = h2h["HC"].fillna(0) + h2h["AC"].fillna(0)
+            valid = tot[h2h["HC"].notna() & h2h["AC"].notna()]
+            if len(valid) >= 1:
+                df.at[idx, "h2h_avg_corners_last3"] = float(valid.head(3).mean())
+                df.at[idx, "h2h_avg_corners_last5"] = float(valid.head(5).mean())
+
+        # Fauly
+        if has_fouls:
+            tot = h2h["HF"].fillna(0) + h2h["AF"].fillna(0)
+            valid = tot[h2h["HF"].notna() & h2h["AF"].notna()]
+            if len(valid) >= 1:
+                df.at[idx, "h2h_avg_fouls_last3"] = float(valid.head(3).mean())
+
+    df = df.drop(columns=["_date_dt"], errors="ignore")
+
+    # Vrať match_id + h2h sloupce jako lookup DataFrame
+    if "match_id" in df.columns:
+        return df[["match_id"] + h2h_cols]
+    return df[h2h_cols]
+
+# ============================================================
+# BUILD FEATURES
 # ============================================================
 
 def build_features(
     df: pd.DataFrame,
     elo_lookup: pd.DataFrame,
     referee_lookup: pd.DataFrame,
+    manager_intervals: pd.DataFrame | None = None,
+    h2h_lookup: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
+    """
+    Hlavní funkce pro výpočet featur.
+    manager_intervals: předpočítané intervaly z _load_manager_intervals().
+    Pokud None, načte se automaticky z managers_norm.csv.
+    """
     df = _sort_matches(df)
-
     numeric_cols = ["FTHG", "FTAG", "HF", "AF", "HC", "AC", "HY", "AY", "HST", "AST"]
     df = _ensure_numeric(df, numeric_cols)
 
-    # Targets
     if "FTHG" in df.columns and "FTAG" in df.columns:
         df["total_goals"] = df["FTHG"] + df["FTAG"]
     if "HF" in df.columns and "AF" in df.columns:
@@ -374,18 +527,15 @@ def build_features(
     if "HST" in df.columns and "AST" in df.columns:
         df["total_shots_on_target"] = df["HST"] + df["AST"]
 
-    # ELO
     if elo_lookup is not None and "match_id" in df.columns:
         df = df.drop(columns=["elo_home", "elo_away", "elo_diff"], errors="ignore")
         df = df.merge(elo_lookup, on="match_id", how="left")
 
-    # Referee
     if referee_lookup is not None and "match_id" in df.columns:
         ref_cols = ["ref_matches_count_last20", "ref_cards_avg_last20", "ref_fouls_avg_last20", "ref_unknown"]
         df = df.drop(columns=[c for c in ref_cols if c in df.columns], errors="ignore")
         df = df.merge(referee_lookup, on="match_id", how="left")
 
-    # Rolling featury
     if "FTHG" in df.columns and "FTAG" in df.columns:
         df = _rolling_team_features(df, "FTHG", "FTAG", "goals")
     if "HC" in df.columns and "AC" in df.columns:
@@ -397,14 +547,20 @@ def build_features(
     if "HST" in df.columns and "AST" in df.columns:
         df = _rolling_team_features(df, "HST", "AST", "shotsot")
 
-    # Forma (rolling win rate – obě varianty)
     df = _add_form_features(df)
-
-    # Sezónní pozice v tabulce
     df = _add_table_position_features(df)
-
-    # Days rest
     df = _add_days_rest(df)
+
+    # Coach featury – načti intervals pokud nebyly předány
+    if manager_intervals is None:
+        manager_intervals = _load_manager_intervals()
+    df = _add_coach_features(df, manager_intervals)
+
+    # H2H featury
+    if h2h_lookup is not None and "match_id" in df.columns:
+        h2h_cols = [c for c in h2h_lookup.columns if c != "match_id"]
+        df = df.drop(columns=h2h_cols, errors="ignore")
+        df = df.merge(h2h_lookup, on="match_id", how="left")
 
     return df
 
@@ -416,17 +572,16 @@ def build_features(
 def main():
     FEATURES_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 1) Načti všechny splits – preferuj verzi s coach features
     all_splits = []
     for split in ["train", "val", "test", "live"]:
         coach_path = PROCESSED_DIR / f"{split}_with_coach_features.csv"
-        base_path = PROCESSED_DIR / f"{split}.csv"
+        base_path  = PROCESSED_DIR / f"{split}.csv"
         path = coach_path if coach_path.exists() else base_path
         if not path.exists():
             print(f"[SKIP] {path} neexistuje.")
             continue
         tmp = pd.read_csv(path, low_memory=False)
-        tmp["_split"] = split
+        tmp["_split"]  = split
         tmp["_source"] = path.name
         all_splits.append(tmp)
 
@@ -440,40 +595,45 @@ def main():
         src = all_df[all_df["_split"] == split]["_source"].iloc[0] if (all_df["_split"] == split).any() else "—"
         print(f"  [{split}] {src}")
 
-    # 2) ELO přes celý dataset
     print("\nPočítám ELO přes celý dataset...")
     elo_lookup = compute_elo_for_all(all_df)
     print(f"ELO spočítáno pro {len(elo_lookup)} zápasů.")
 
-    # 3) Referee features přes celý dataset
     print("\nPočítám Referee features přes celý dataset...")
     referee_lookup = compute_referee_features_for_all(all_df)
     print(f"Referee features spočítány pro {len(referee_lookup)} zápasů.")
 
-    # 4) Zpracuj každý split zvlášť
+    print("\nPočítám H2H featury přes celý dataset...")
+    h2h_lookup = compute_h2h_features(all_df)
+    print(f"H2H featury spočítány pro {len(h2h_lookup)} zápasů.")
+
+    print("\nNačítám manager intervals...")
+    manager_intervals = _load_manager_intervals()
+    if manager_intervals is not None:
+        print(f"Manager intervals načteny: {len(manager_intervals)} záznamů.")
+    else:
+        print("[WARN] managers_norm.csv nenalezen – coach featury budou NaN.")
+
     for split in ["train", "val", "test", "live"]:
         coach_path = PROCESSED_DIR / f"{split}_with_coach_features.csv"
-        base_path = PROCESSED_DIR / f"{split}.csv"
-        in_path = coach_path if coach_path.exists() else base_path
-
+        base_path  = PROCESSED_DIR / f"{split}.csv"
+        in_path    = coach_path if coach_path.exists() else base_path
         if not in_path.exists():
             print(f"\n[SKIP] {in_path} neexistuje.")
             continue
-
         out_path = FEATURES_DIR / f"{split}_features.csv"
         df = pd.read_csv(in_path, low_memory=False)
-        df = build_features(df, elo_lookup, referee_lookup)
+        df = build_features(df, elo_lookup, referee_lookup, manager_intervals, h2h_lookup)
         df = df.drop(columns=["_split", "_source"], errors="ignore")
         df.to_csv(out_path, index=False)
-
         print(f"\n[{split}] Saved: {out_path} | rows: {len(df)} | cols: {len(df.columns)}")
-
         checks = {
-            "Coach":   ["HomeCoachTenureDays", "CoachTenureDiff"],
+            "Coach":   ["HomeCoachTenureDays", "CoachTenureDiff", "NewHomeCoach_30"],
             "Referee": ["ref_cards_avg_last20", "ref_fouls_avg_last20"],
             "Forma":   ["home_points_roll5", "home_form_home_roll5"],
             "Tabulka": ["home_table_pos", "table_pos_diff"],
             "Rest":    ["home_days_rest", "is_midweek"],
+            "H2H":     ["h2h_avg_yellow_last3", "h2h_avg_goals_last3", "h2h_matches_count"],
         }
         for label, cols in checks.items():
             present = [c for c in cols if c in df.columns]

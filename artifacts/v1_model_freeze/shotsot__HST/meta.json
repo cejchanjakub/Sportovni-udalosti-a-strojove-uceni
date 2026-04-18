@@ -3,9 +3,10 @@
   "prefix": "shotsot",
   "family": "poisson",
   "alpha": null,
+  "alpha_estimation": null,
   "clip": null,
   "standardize": false,
-  "n_features": 53,
+  "n_features": 61,
   "features": [
     "home_shotsot_for_roll3",
     "home_shotsot_against_roll3",
@@ -59,30 +60,38 @@
     "diff_form_ha_roll5",
     "home_form_home_roll10",
     "away_form_away_roll10",
-    "diff_form_ha_roll10"
+    "diff_form_ha_roll10",
+    "h2h_avg_yellow_last3",
+    "h2h_avg_yellow_last5",
+    "h2h_avg_goals_last3",
+    "h2h_avg_goals_last5",
+    "h2h_avg_corners_last3",
+    "h2h_avg_corners_last5",
+    "h2h_avg_fouls_last3",
+    "h2h_matches_count"
   ],
   "metrics": {
     "train": {
-      "mae": 1.833213880570635,
-      "rmse": 2.3346764243009077
+      "mae": 1.8344760910157456,
+      "rmse": 2.333097373330967
     },
     "val": {
-      "mae": 2.054418446852734,
-      "rmse": 2.615942514562129
+      "mae": 2.0767660353926725,
+      "rmse": 2.6441764856761867
     },
     "test": {
-      "mae": 1.8267331961678326,
-      "rmse": 2.369655599842917
+      "mae": 1.8101383579060362,
+      "rmse": 2.3495651954369485
     }
   },
-  "saved_at": "2026-03-04T20:20:34",
+  "saved_at": "2026-04-17T22:06:55",
   "tag": null,
   "data_files": {
     "train": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\train_features.csv",
     "val": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\val_features.csv",
     "test": "C:\\Users\\Cejch\\OneDrive\\Plocha\\Diplomka\\dp_sazeni_ml\\data\\features\\test_features.csv"
   },
-  "data_hash_train": "fa97ddee1df4cb3c69a6aa2bf55328b8fc9636f8aa7d0e8fda862fa09c9eb332",
-  "data_hash_val": "3d573586c5eab3196415ade51d1978b7f0f535ce7f4ce0740670c85cef81a0c7",
-  "data_hash_test": "b1c5f6c8c238d000dcf476309478efd009cc0e4a41a95d1c3c380675ce7e5636"
+  "data_hash_train": "786d4fe99b1a31d399f539cfe96745c0e18705db99eb85253d1e8ec5b0d50799",
+  "data_hash_val": "88b58fbeba2ff20981a8b47212d7bdce6d6536ee17e3917e840361e47f933124",
+  "data_hash_test": "de0d53dd931fcee5c3174664595fb0659144ff24f82297e6c57fd5d46f3ec555"
 }
